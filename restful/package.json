@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/joao-souza-flooxai/section4-js-course-nodejs#readme",
   "dependencies": {
+    "body-parser": "^1.20.3",
+    "consign": "^0.1.6",
     "express": "^4.21.2"
   }
 }

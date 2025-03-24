@@ -1,31 +1,22 @@
-//Invocando o express
-let express = require('express');
-//Invocando o metodo para definir rotas do Express Router()
-let routes = express.Router();
-
-//Fazendo as coisas da rota /users
-routes.get('/', (req,res)=>{
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.json({
-            users:[{
-                name: "João Victor",
-                idade: "21"
-            }]
-    });
-
-});
-
-routes.get('/admin', (req, res)=>{
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.json({
-            users:[{
-               
-            }]
-    });
-
-});
-
 //Exportando esse modulo para ser chamado na aplicação
-module.exports = routes;
+module.exports = (app) =>{
+    //Fazendo as coisas da rota /users
+    app.get('/users', (req,res)=>{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+                users:[{
+                    name: "João Victor",
+                    idade: "21"
+                }]
+        });
+
+    });
+
+    //Recebe uma solicitação com corpo(body) e mostra o que foi enviado
+    app.post('/users/admin', (req, res)=>{
+    
+        res.json(req.body);
+
+    });
+};
