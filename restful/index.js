@@ -1,25 +1,14 @@
-//Aqui, estamos importando o módulo http, que permite criar um servidor web em Node.js.
+//Aqui, estamos importando o módulo do Express(npm), que permite criar um servidor web em Node.js.
 const express = require('express');
-
+//Definindo as rotas da aplicação
+let routesIndex = require('./routes/index');
+let routesUsers = require('./routes/users');
+//Instanciando o modulo do servidor 
 let app = express();
 
-app.get('/', (req,res)=>{
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/html');
-    res.end('<h1>Olá</h1>');
-});
-
-app.get('/users', (req,res)=>{
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.json({
-            users:[{
-                name: "João Victor",
-                idade: "21"
-            }]
-    });
-});
-
+//Descrevendo as rotas ao servidor
+app.use(routesIndex);
+app.use('/users', routesUsers);
 
 app.listen(3000, '127.0.0.1', ()=>{
     console.log("servidor rodando");
