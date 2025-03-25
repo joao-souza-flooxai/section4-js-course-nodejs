@@ -35,8 +35,6 @@ module.exports = app =>{ //o app é a instancia do Express que é passada no con
 
     // Cadastrando os dados
     route.post((req, res) => {
-        
-        if (!app.utils.validator.user(app, req, res)) return false;
 
         if (!errors.isEmpty()) {
             return app.utils.error.send(errors.array(), req, res);
