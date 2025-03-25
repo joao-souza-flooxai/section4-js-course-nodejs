@@ -11,8 +11,8 @@ app.use(bodyParser.json());
 //Sugestão de configurar as solicitações para UrlEncoded
 app.use(bodyParser.urlencoded({extended: false}));
 
-//Colocando todas as rotas definidas em "routes" na instacia do servidor Express(app)
-consign().include('routes').into(app);
+//Colocando as pastas na aplicação
+consign().include('routes').include('utils').into(app);
 
 
 app.listen(3000, '127.0.0.1', ()=>{

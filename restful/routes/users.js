@@ -1,22 +1,88 @@
+//Importanto e instanciando o NeDB e criando a database users.db
+let NeDB = require('nedb');
+let db = new NeDB({
+    filename:'users.db',
+    autoload: true
+});
 //Exportando esse modulo para ser chamado na aplicação
-module.exports = (app) =>{
+module.exports = app =>{ //o app é a instancia do Express que é passada no consign.include 
+
+    //Definindo a rota padrão
+    let route = app.route('/users');
+
     //Fazendo as coisas da rota /users
-    app.get('/users', (req,res)=>{
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({
-                users:[{
-                    name: "João Victor",
-                    idade: "21"
-                }]
+    route.get((req,res)=>{
+
+        db.find({}).sort({name:1}).exec((err,users)=>{
+
+            if(err){
+                //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
+                app.utils.error.send(err, req, res);
+            }else{
+
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    users
+                });
+
+            }
+        });
+        
+    });
+
+
+    //Cadastrando os dados 
+    route.post((req, res)=>{
+    
+        db.insert(req.body,(err,user)=>{
+            if(err){
+                //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
+                app.utils.error.send(err, req, res);
+            }else{
+                res.status(201).json(user);
+            }        
+            
         });
 
     });
-
-    //Recebe uma solicitação com corpo(body) e mostra o que foi enviado
-    app.post('/users/admin', (req, res)=>{
     
-        res.json(req.body);
+    let routeId = app.route('/users/:_id');
 
+    routeId.get((req,res)=>{
+        db.findOne({_id: req.params._id}).exec((err, user)=>{
+            if(err){
+                //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
+                app.utils.error.send(err, req, res);
+            }else{
+                res.status(200).json(user);
+            }        
+        })
     });
-};
+
+    routeId.put((req,res)=>{
+        db.update({_id: req.params._id}, req.body, err=>{
+            if(err){
+                //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
+                app.utils.error.send(err, req, res);
+            }else{
+                res.status(200).json(Object.assign(req.params, req.body));
+            }        
+        })
+    });
+
+    routeId.delete((req,res)=>{
+        db.remove({_id: req.params._id}, {}, err=>{
+            if(err){
+                //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
+                app.utils.error.send(err, req, res);
+            }else{
+                res.status(200).json({
+                    id: req.params, 
+                    message: "Deleted succesfully!"
+                });
+            }        
+        })
+    });
+
+}
