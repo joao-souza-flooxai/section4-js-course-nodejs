@@ -4,5 +4,6 @@ module.exports = {
         res.status(code).json({
             error: err
         });
-    }
-}
+
+    } 
+};

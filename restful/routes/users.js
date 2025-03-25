@@ -4,6 +4,7 @@ let db = new NeDB({
     filename:'users.db',
     autoload: true
 });
+
 //Exportando esse modulo para ser chamado na aplicação
 module.exports = app =>{ //o app é a instancia do Express que é passada no consign.include 
 
@@ -32,9 +33,15 @@ module.exports = app =>{ //o app é a instancia do Express que é passada no con
     });
 
 
-    //Cadastrando os dados 
-    route.post((req, res)=>{
-    
+    // Cadastrando os dados
+    route.post((req, res) => {
+        
+        if (!app.utils.validator.user(app, req, res)) return false;
+
+        if (!errors.isEmpty()) {
+            return app.utils.error.send(errors.array(), req, res);
+        }
+
         db.insert(req.body,(err,user)=>{
             if(err){
                 //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
@@ -61,6 +68,9 @@ module.exports = app =>{ //o app é a instancia do Express que é passada no con
     });
 
     routeId.put((req,res)=>{
+
+        if (!app.utils.validator.user(app, req, res)) return false;
+
         db.update({_id: req.params._id}, req.body, err=>{
             if(err){
                 //Utilizando o modulo exportado de utils/error.js. Somente possível porque foi colocado no consign().include no index.js
